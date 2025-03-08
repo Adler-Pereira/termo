@@ -36,7 +36,6 @@ async function ApiConnection() {
     
                 loadingScreen.style.display = "none";
                 wordsArray[i] = wordToGuessUpper;
-                console.log(wordsArray[i]);
             } catch (error) {
                 window.alert("Erro ao conectar com o servidor. " + error);
             }
@@ -60,7 +59,6 @@ document.querySelectorAll('.keyboard-container input[type="button"]').forEach((b
                     break;
             }
         }
-        console.log(inputWord + " " + currentCharNum);
     });
 });
 
@@ -106,7 +104,6 @@ function deleteLetter() {
 
 function sendWord() {
     if (currentCharNum === charLimitWord) {
-        console.log("envieikk");
 
         let startIndex = (currentAttempt - 1) * charLimitWord;
         let correctLetters = 0;
