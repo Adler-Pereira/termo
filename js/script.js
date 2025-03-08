@@ -21,7 +21,7 @@ async function ApiConnection() {
     for (let i = 0; i < wordsArray.length; i++) {
         if (wordsArray[i] == "") {
             try {
-                response = await fetch(`http://ec2-3-17-158-243.us-east-2.compute.amazonaws.com:8080/api/word-request`);
+                response = await fetch(`https://eqmwlsdw2u7uhd36hpnvkcdyla0fzkop.lambda-url.us-east-2.on.aws/`);
                 wordToGuess = await response.text();
                 wordToGuessUpper = wordToGuess.toUpperCase();
         
