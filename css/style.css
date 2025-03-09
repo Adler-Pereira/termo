@@ -88,6 +88,7 @@ body{
     position: relative;
     display: flex;
     justify-content: center;
+    margin: 1px;
     align-items: center;
     border: 1px solid #63623B;
     background-color: var(--square-color);
@@ -107,7 +108,6 @@ body{
     height: 55px;
     border-radius: 8px;
     
-    font-size: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -153,6 +153,8 @@ body{
 }
 
 .keyboard input{
+    height: 100%;
+    width: 100%;
     border: none;
     border-radius: 8px;
     outline: none;
@@ -170,7 +172,15 @@ body{
     width: 100%;
 }
 
+.backspace input{
+    width: 100%;
+}
+
 .send{
+    width: 100%;
+}
+
+.send input{
     width: 100%;
 }
 
