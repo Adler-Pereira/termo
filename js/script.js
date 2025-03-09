@@ -37,7 +37,8 @@ async function ApiConnection() {
                 loadingScreen.style.display = "none";
                 wordsArray[i] = wordToGuessUpper;
             } catch (error) {
-                window.alert("Erro ao conectar com o servidor. " + error);
+                console.error('Error:', error);
+                //window.alert("Erro ao conectar com o servidor. " + error);
             }
         }
     }
