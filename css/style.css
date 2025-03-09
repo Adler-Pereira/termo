@@ -153,8 +153,6 @@ body{
 }
 
 .keyboard input{
-    height: 100%;
-    width: 100%;
     border: none;
     border-radius: 8px;
     outline: none;
@@ -163,17 +161,15 @@ body{
     font-weight: bold;
     text-align: center;
     
-    font-size: 24px;
+    font-size: 20px;
     text-transform: uppercase;
     cursor: pointer;
 }
 
 .backspace{
-    width: 100%;
 }
 
 .backspace input{
-    width: 100%;
 }
 
 .send{
