@@ -15,7 +15,7 @@ let indexWord = 0;
 let response;
 
 ApiConnection();
-//loadingScreen.style.display = "none";
+loadingScreen.style.display = "none";
 
 async function ApiConnection() {
     for (let i = 0; i < wordsArray.length; i++) {
