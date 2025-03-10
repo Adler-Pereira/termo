@@ -135,6 +135,7 @@ body{
     width: 100%;
     height: 100%;
     border: none;
+    border-radius: 8px;
     outline: none;
     background: transparent;
     color: white;
@@ -171,8 +172,9 @@ body{
 
 .keyboard input{
     border: none;
+    border-radius: 8px;
     outline: none;
-    background: transparent;
+    background: red;
     color: white;
     font-weight: bold;
     text-align: center;
