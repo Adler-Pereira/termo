@@ -139,6 +139,7 @@ body{
     flex-direction: column;
     justify-content: space-around;
     height: 27%;
+    width: 100%;
 }
 
 .line-keyboard{
@@ -150,6 +151,8 @@ body{
 
 .keyboard{
     border-radius: 8px;
+    margin: 0;
+    padding: 0;
 }
 
 .keyboard input{
