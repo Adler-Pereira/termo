@@ -174,7 +174,7 @@ body{
     border: none;
     border-radius: 8px;
     outline: none;
-    background: red;
+    background: transparent;
     color: white;
     font-weight: bold;
     text-align: center;
