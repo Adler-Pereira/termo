@@ -1,8 +1,12 @@
-let currentIndex = 0; // Índice do próximo quadrado a ser preenchido
+let loadingScreen = document.getElementById("bg-loading");
 const squares = document.querySelectorAll('.line input[type="text"]'); // Seleciona todos os quadrados
 const sqKeyboard = document.querySelectorAll('.line-keyboard input[type="button"]');
 let retryButton = document.getElementById("retry");
-let loadingScreen = document.getElementById("bg-loading");
+let wordDefH1 = document.getElementById("word-mean");
+let meaningH3 = document.getElementById("meaning");
+let pageMeaning = document.getElementById("bg-word");
+
+let currentIndex = 0; // Índice do próximo quadrado a ser preenchido
 const charLimitWord = 5; // Número de letras para cada palavra
 let currentCharNum = 0;
 const attemptsNum = 5;
@@ -10,39 +14,17 @@ let currentAttempt = 1;
 let inputWord = "";
 let wordToGuess;
 let wordToGuessUpper;
-let wordsArray = ["","","","",""];
+let words = ["",""];
+let wordsArrayUpper = ["",""];
+let meanings = ["",""];
 let indexWord = 0;
-let response;
+let resRandomWord;
+let resJson;
+let resWordMeaning;
+let wordMeaning;
 
-ApiConnection();
+requestRandomWord();
 //loadingScreen.style.display = "none";
-
-async function ApiConnection() {
-    for (let i = 0; i < wordsArray.length; i++) {
-        if (wordsArray[i] == "") {
-            try {
-                response = await fetch(`https://eqmwlsdw2u7uhd36hpnvkcdyla0fzkop.lambda-url.us-east-2.on.aws/`);
-                wordToGuess = await response.text();
-                wordToGuessUpper = wordToGuess.toUpperCase();
-        
-                for (let j = 0; j < wordToGuess.length; j++) {
-                    wordToGuessUpper = wordToGuessUpper.replace(/[Ç]/g, "C");
-                    wordToGuessUpper = wordToGuessUpper.replace(/[ÁÃÂ]/g, "A");
-                    wordToGuessUpper = wordToGuessUpper.replace(/[ÉÊ]/g, "E");
-                    wordToGuessUpper = wordToGuessUpper.replace(/[ÍÎ]/g, "I");
-                    wordToGuessUpper = wordToGuessUpper.replace(/[ÓÕÔ]/g, "O");
-                    wordToGuessUpper = wordToGuessUpper.replace(/[ÚÛ]/g, "U");
-                }
-    
-                loadingScreen.style.display = "none";
-                wordsArray[i] = wordToGuessUpper;
-            } catch (error) {
-                console.error('Error:', error);
-                //window.alert("Erro ao conectar com o servidor. " + error);
-            }
-        }
-    }
-}
 
 // Adiciona evento de clique para cada botão do teclado virtual
 document.querySelectorAll('.keyboard-container input[type="button"]').forEach((btn) => {
@@ -83,6 +65,52 @@ document.addEventListener("keydown", (event) => {
     //console.log(inputWord + " " + currentCharNum);
 });
 
+
+//FUNÇÕES
+//API que retorna uma palavra de 5 letras aleatória
+async function requestRandomWord() {
+    for (let i = 0; i < wordsArrayUpper.length; i++) {
+        if (wordsArrayUpper[i] == "" && words[i] == "") {
+            try {
+                resRandomWord = await fetch(`https://eqmwlsdw2u7uhd36hpnvkcdyla0fzkop.lambda-url.us-east-2.on.aws/`);
+                wordToGuess = await resRandomWord.text();
+                words[i] = wordToGuess;
+                wordToGuessUpper = wordToGuess.toUpperCase();
+        
+                for (let j = 0; j < wordToGuess.length; j++) {
+                    wordToGuessUpper = wordToGuessUpper.replace(/[Ç]/g, "C");
+                    wordToGuessUpper = wordToGuessUpper.replace(/[ÁÃÂ]/g, "A");
+                    wordToGuessUpper = wordToGuessUpper.replace(/[ÉÊ]/g, "E");
+                    wordToGuessUpper = wordToGuessUpper.replace(/[ÍÎ]/g, "I");
+                    wordToGuessUpper = wordToGuessUpper.replace(/[ÓÕÔ]/g, "O");
+                    wordToGuessUpper = wordToGuessUpper.replace(/[ÚÛ]/g, "U");
+                }
+    
+                loadingScreen.style.display = "none";
+                wordsArrayUpper[i] = wordToGuessUpper;
+                meanings[i] = await requestWordMeaning(wordToGuess);
+                
+            } catch (error) {
+                console.error("Error: ", error);
+                //window.alert("Erro ao conectar com o servidor. " + error);
+            }
+        }
+    }
+    wordDefH1.innerText = words[indexWord];
+    meaningH3.innerText = meanings[indexWord];
+}
+
+async function requestWordMeaning(word) {
+    try {
+        resWordMeaning = await fetch(`https://requestwordmeaning.up.railway.app/api/meaning-request?word=${wordToGuess}`)
+        resJson = await resWordMeaning.json();
+        wordMeaning = resJson.body;
+        return wordMeaning;
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+}
+
 // Função para escrever a letra no próximo quadrado disponível
 function writeLetter(letter) {
     if (currentCharNum < charLimitWord) {
@@ -110,15 +138,15 @@ function sendWord() {
         let correctLetters = 0;
 
         inputWord = inputWord.toUpperCase();
-        //console.log(wordsArray[indexWord]);
-        let remainingLetters = wordsArray[indexWord].split(""); // Cópia para controle das letras restantes
+        //console.log(wordsArrayUpper[indexWord]);
+        let remainingLetters = wordsArrayUpper[indexWord].split(""); // Cópia para controle das letras restantes
 
         // Primeira passagem: marca apenas os verdes
         for (let i = 0; i < wordToGuess.length; i++) {
             let square = squares[startIndex + i];
             let keyButton = document.querySelector(`.keyboard-container input[value='${inputWord.charAt(i)}']`);
 
-            if (inputWord.charAt(i) === wordsArray[indexWord].charAt(i)) {
+            if (inputWord.charAt(i) === wordsArrayUpper[indexWord].charAt(i)) {
                 square.style.backgroundColor = "green";
                 if (keyButton) keyButton.style.backgroundColor = "green";
                 correctLetters++;
@@ -156,12 +184,15 @@ function sendWord() {
 
 function checkEndGame(correctLetters) {
     if (correctLetters == 5) {
-        window.alert("Parabéns!"+ "\n" + "Você acertou a palavra " + wordsArray[indexWord] + " em " + currentAttempt + " tentativa(s)");
-        retryButton.style.display = "flex";
+        window.alert("Parabéns!"+ "\n" + "Você acertou a palavra " + wordsArrayUpper[indexWord] + " em " + currentAttempt + " tentativa(s)");
+        
+    retryButton.style.display = "flex";
+    pageMeaning.style.display = "flex";
     }
     else if (currentAttempt == attemptsNum && correctLetters != 5) {
-        window.alert("Game Over!"+ "\n" + "A palavra era " + wordsArray[indexWord]);
+        window.alert("Game Over!"+ "\n" + "A palavra era " + wordsArrayUpper[indexWord]);
         retryButton.style.display = "flex";
+        pageMeaning.style.display = "flex";
     }
 }
 
@@ -175,15 +206,17 @@ function RetryButton() {
 
     sqKeyboard.forEach((keyBtn) => keyBtn.style.backgroundColor = "");
 
+    pageMeaning.style.display = "none";
     retryButton.style.display = "none";
-    wordsArray[indexWord] = "";
+    wordsArrayUpper[indexWord] = "";
+    words[indexWord] = "";
 
-    if (indexWord == 4) indexWord = 0;
+    if (indexWord == words.length-1) indexWord = 0;
     else indexWord++;
 
     currentAttempt = 1;
     currentIndex = 0;
-    ApiConnection();
+    requestRandomWord();
 }
 
 

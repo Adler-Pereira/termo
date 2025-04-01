@@ -2,6 +2,7 @@
     --main-color: #7677C6;
     --secundary-color: #C6C576;
     --square-color: #9E9E9E;
+    --font-color: white;
 }
 
 *{
@@ -19,36 +20,19 @@ body{
 }
 
 .retry{
-    height: 100%;
     width: 100%;
-    z-index: 1;
     display: flex;
-    align-items: center;
+    justify-content: center;
 }
 
 .retry input{
-    margin-left: 10px;
-    height: 50px;
-    width: 200px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 #retry{
     display: none;
-}
-
-#bg-loading{
-    z-index: 2;
-    display: flex;
-}
-
-#loading {
-    position: absolute;
-    animation: is-rotating 1s infinite;
-    border: 6px solid #C6C576;
-    border-radius: 50%;
-    border-top-color: #9E9E9E;
-    height: 50px;
-    width: 50px;
 }
 
 .background{
@@ -61,6 +45,52 @@ body{
     width: 100%;
     height: 100%;
     background-color: var(--main-color);
+}
+
+#bg-loading, #bg-word{
+    z-index: 3;
+    display: flex;
+}
+
+#bg-word{
+    display: none;
+    background-color: var(--secundary-color);
+}
+
+.word-meaning-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    max-width: 900px;
+    max-height: 400px;
+    padding: 20px;
+    background-color: var(--main-color);
+}
+
+.word-meaning{
+    margin: 0;
+    z-index: 2;
+    color: var(--font-color);
+}
+
+#word{
+    height: 30%;
+}
+
+#meaning{
+    height: 70%;
+    text-align: justify;
+}
+
+#loading{
+    position: absolute;
+    animation: is-rotating 1s infinite;
+    border: 6px solid #C6C576;
+    border-radius: 50%;
+    border-top-color: #9E9E9E;
+    height: 50px;
+    width: 50px;
 }
 
 .column{
@@ -138,7 +168,7 @@ body{
     border-radius: 8px;
     outline: none;
     background: transparent;
-    color: white;
+    color: var(--font-color);
     font-size: 30px;
     font-weight: bold;
     text-align: center;
@@ -172,14 +202,14 @@ body{
 
 .keyboard input{
     border: none;
-    max-width: 100%;
+    width: 100%;
     border-radius: 8px;
     outline: none;
     background: transparent;
-    color: white;
+    color: var(--font-color);
     font-weight: bold;
     text-align: center;
-    
+    cursor: pointer;
     font-size: 24px;
 }
 
@@ -189,4 +219,25 @@ body{
 
 .send{
     width: 100%;
+}
+
+@media (max-width: 600px) {
+    #bg-word{
+        background-color: var(--main-color);
+    }
+
+    .word-meaning-container{      
+        max-width: unset;
+        max-height: unset;
+        padding: 0 20px 0 20px;
+    }
+
+    #word{
+        padding-top: 20px;
+        height: 10%;
+    }
+    
+    #meaning{
+        height: 90%;
+    }
 }
