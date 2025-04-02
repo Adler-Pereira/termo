@@ -185,9 +185,8 @@ function sendWord() {
 function checkEndGame(correctLetters) {
     if (correctLetters == 5) {
         window.alert("Parabéns!"+ "\n" + "Você acertou a palavra " + wordsArrayUpper[indexWord] + " em " + currentAttempt + " tentativa(s)");
-        
-    retryButton.style.display = "flex";
-    pageMeaning.style.display = "flex";
+        retryButton.style.display = "flex";
+        pageMeaning.style.display = "flex";
     }
     else if (currentAttempt == attemptsNum && correctLetters != 5) {
         window.alert("Game Over!"+ "\n" + "A palavra era " + wordsArrayUpper[indexWord]);
