@@ -1,36 +1,38 @@
-let loadingScreen = document.getElementById("bg-loading");
-const squares = document.querySelectorAll('.line input[type="text"]'); // Seleciona todos os quadrados
-const sqKeyboard = document.querySelectorAll('.line-keyboard input[type="button"]');
-let retryButton = document.getElementById("retry");
-let wordDefH1 = document.getElementById("word-mean");
-let meaningH3 = document.getElementById("meaning");
-let pageMeaning = document.getElementById("bg-word");
+const loadingScreen = document.getElementById("bg-loading");
+const lettersDisplay = document.querySelectorAll('.letter-display'); // Seleciona todos os quadrados
+const keyboardKeys = document.querySelectorAll('.keybutton');
+const retryButton = document.getElementById("retry");
+const meanPage = document.getElementById("bg-word");
+const wordMeanPage = document.getElementById("word-mean");
+const meaningMeanPage = document.getElementById("meaning");
 
-let currentIndex = 0; // Índice do próximo quadrado a ser preenchido
-const charLimitWord = 5; // Número de letras para cada palavra
-let currentCharNum = 0;
 const attemptsNum = 5;
 let currentAttempt = 1;
-let inputWord = "";
+
+let wordsArrayUpper = ["",""];
+let words = ["",""];
+let resRandomWord;
 let wordToGuess;
 let wordToGuessUpper;
-let words = ["",""];
-let wordsArrayUpper = ["",""];
 let meanings = ["",""];
-let indexWord = 0;
-let resRandomWord;
-let resJson;
-let resWordMeaning;
+
 let wordMeaning;
+
+const charLimitWord = 5; // Número de letras para cada palavra
+let currentCharNum = 0;
+let currentIndex = 0; // Índice do próximo quadrado a ser preenchido
+let inputWord = "";
+
+let indexWord = 0;
 
 requestRandomWord();
 //loadingScreen.style.display = "none";
 
 // Adiciona evento de clique para cada botão do teclado virtual
-document.querySelectorAll('.keyboard-container input[type="button"]').forEach((btn) => {
-    btn.addEventListener("click", () => {
+keyboardKeys.forEach((key) => {
+    key.addEventListener("click", () => {
         if (currentAttempt <= attemptsNum) {
-            switch (btn.value) {
+            switch (key.value) {
                 case "<":
                     deleteLetter();
                     break;
@@ -38,7 +40,7 @@ document.querySelectorAll('.keyboard-container input[type="button"]').forEach((b
                     sendWord();
                     break;
                 default:
-                    writeLetter(btn.value);
+                    writeLetter(key.value);
                     break;
             }
         }
@@ -96,13 +98,15 @@ async function requestRandomWord() {
             }
         }
     }
-    wordDefH1.innerText = words[indexWord];
-    meaningH3.innerText = meanings[indexWord];
+    wordMeanPage.innerText = words[indexWord];
+    meaningMeanPage.innerText = meanings[indexWord];
 }
 
 async function requestWordMeaning(word) {
+    let resWordMeaning;
+    let resJson;
     try {
-        resWordMeaning = await fetch(`https://requestwordmeaning.up.railway.app/api/meaning-request?word=${wordToGuess}`)
+        resWordMeaning = await fetch(`https://request-word-meaning.onrender.com/api/meaning-request?word=${word}`)
         resJson = await resWordMeaning.json();
         wordMeaning = resJson.body;
         return wordMeaning;
@@ -114,7 +118,7 @@ async function requestWordMeaning(word) {
 // Função para escrever a letra no próximo quadrado disponível
 function writeLetter(letter) {
     if (currentCharNum < charLimitWord) {
-        squares[currentIndex].value = letter;
+        lettersDisplay[currentIndex].value = letter;
         currentIndex++;
         currentCharNum++;
         inputWord += letter;
@@ -126,7 +130,7 @@ function deleteLetter() {
     if (currentCharNum > 0) {
         currentIndex--;
         currentCharNum--;
-        squares[currentIndex].value = "";
+        lettersDisplay[currentIndex].value = "";
         inputWord = inputWord.slice(0, -1);
     }
 }
@@ -143,7 +147,7 @@ function sendWord() {
 
         // Primeira passagem: marca apenas os verdes
         for (let i = 0; i < wordToGuess.length; i++) {
-            let square = squares[startIndex + i];
+            let square = lettersDisplay[startIndex + i];
             let keyButton = document.querySelector(`.keyboard-container input[value='${inputWord.charAt(i)}']`);
 
             if (inputWord.charAt(i) === wordsArrayUpper[indexWord].charAt(i)) {
@@ -156,7 +160,7 @@ function sendWord() {
 
         // Segunda passagem: marca os amarelos sem duplicar letras já usadas
         for (let i = 0; i < wordToGuess.length; i++) {
-            let square = squares[startIndex + i];
+            let square = lettersDisplay[startIndex + i];
             let letter = inputWord.charAt(i);
             let keyButton = document.querySelector(`.keyboard-container input[value='${letter}']`);
 
@@ -186,26 +190,26 @@ function checkEndGame(correctLetters) {
     if (correctLetters == 5) {
         window.alert("Parabéns!"+ "\n" + "Você acertou a palavra " + wordsArrayUpper[indexWord] + " em " + currentAttempt + " tentativa(s)");
         retryButton.style.display = "flex";
-        pageMeaning.style.display = "flex";
+        meanPage.style.display = "flex";
     }
     else if (currentAttempt == attemptsNum && correctLetters != 5) {
         window.alert("Game Over!"+ "\n" + "A palavra era " + wordsArrayUpper[indexWord]);
         retryButton.style.display = "flex";
-        pageMeaning.style.display = "flex";
+        meanPage.style.display = "flex";
     }
 }
 
 //função retry que irá resetar o game quando o botão for pressionado
 function RetryButton() {
     //window.alert("apertaro eu :|");
-    squares.forEach((square) => {
+    lettersDisplay.forEach((square) => {
         square.style.backgroundColor = "";
         square.value = "";
     });
 
-    sqKeyboard.forEach((keyBtn) => keyBtn.style.backgroundColor = "");
+    keyboardKeys.forEach((keyBtn) => keyBtn.style.backgroundColor = "");
 
-    pageMeaning.style.display = "none";
+    meanPage.style.display = "none";
     retryButton.style.display = "none";
     wordsArrayUpper[indexWord] = "";
     words[indexWord] = "";
