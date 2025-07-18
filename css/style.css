@@ -192,7 +192,7 @@ body{
 .line-keyboard{
     position: relative;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
 }
 
@@ -205,6 +205,7 @@ body{
 .keyboard input{
     border: none;
     width: 100%;
+    padding: 0;
     border-radius: 8px;
     outline: none;
     background: transparent;
@@ -216,7 +217,7 @@ body{
 }
 
 .backspace{
-    width: 100%;
+    width: 30%;
 }
 
 .send{
